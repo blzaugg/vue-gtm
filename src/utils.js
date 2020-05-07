@@ -12,9 +12,10 @@ export const logDebug = function (message) {
 
 /**
  * Load GTM script tag
- * @param {String}  id  GTM ID
+ * @param {String}  id                  GTM ID
+ * @param {Object}  [queryParams={}]    GTM query string params
  */
-export const loadScript = function (id) {
+export const loadScript = function (id, queryParams = {}) {
   const win    = window,
         doc    = document,
         script = doc.createElement('script'),
@@ -30,9 +31,17 @@ export const loadScript = function (id) {
   if (!id) {
     return
   }
-
+  
+  queryParams.id = id
+  
+  const queryEntries = Object.entries(queryParams)
+  
+  const queryString = queryEntries.map(([name, value]) => {
+    return `${name}=${value}`
+  })
+  
   script.async = true;
-  script.src   = `https://www.googletagmanager.com/gtm.js?id=${id}`
+  script.src   = `https://www.googletagmanager.com/gtm.js?${queryString.join('&')}`
 
   doc.body.appendChild(script)
 }
